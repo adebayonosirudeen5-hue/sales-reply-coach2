@@ -996,6 +996,8 @@ Provide 2-3 re-engagement message suggestions in JSON format:
     analyzeProfile: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
+        const { scrapeInstagramProfile, scrapeTikTokProfile, scrapeStore } = await import("./webScraper");
+        
         const prospect = await db.getProspect(input.id, ctx.user.id);
         if (!prospect) throw new Error("Prospect not found");
 
@@ -1005,9 +1007,40 @@ Provide 2-3 re-engagement message suggestions in JSON format:
           throw new Error("Please add at least one social URL for this prospect");
         }
 
+        // Scrape actual data from URLs
+        let scrapedInsights: string[] = [];
+        let scrapedProducts: string[] = [];
+
+        if (prospect.instagramUrl) {
+          const igData = await scrapeInstagramProfile(prospect.instagramUrl);
+          if (igData) {
+            scrapedInsights.push(`INSTAGRAM PROFILE (@${igData.name}):\nBio: ${igData.bio}\nFollowers: ${igData.followers}`);
+          }
+        }
+
+        if (prospect.tiktokUrl) {
+          const ttData = await scrapeTikTokProfile(prospect.tiktokUrl);
+          if (ttData) {
+            scrapedInsights.push(`TIKTOK PROFILE (@${ttData.name}):\nBio: ${ttData.bio}`);
+          }
+        }
+
+        if (prospect.storeUrl) {
+          const storeData = await scrapeStore(prospect.storeUrl);
+          if (storeData) {
+            scrapedInsights.push(`STORE/WEBSITE:\n${storeData.description}`);
+            scrapedProducts.push(...storeData.products);
+          }
+        }
+
+        const scrapedContext = scrapedInsights.length > 0 
+          ? `\n\nSCRAPED DATA FROM THEIR PROFILES:\n${scrapedInsights.join("\n\n")}`
+          : "";
+
         const workspace = await db.getWorkspace(prospect.workspaceId, ctx.user.id);
         const workspaceContext = workspace ? `
 Your Business: ${workspace.profileAnalysis || workspace.nicheDescription || "Not specified"}
+Your Products: ${workspace.productsDetected || "Not specified"}` : "";
 Your Products: ${workspace.productsDetected || "Not specified"}` : "";
 
         // Get relevant knowledge for first contact
