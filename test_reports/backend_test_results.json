@@ -1,60 +1,60 @@
 {
-  "timestamp": "2026-02-09T21:10:41.103829",
+  "timestamp": "2026-02-09T21:12:42.770719",
   "summary": {
     "total_tests": 7,
-    "passed": 3,
-    "failed": 4,
-    "success_rate": 42.857142857142854
+    "passed": 6,
+    "failed": 1,
+    "success_rate": 85.71428571428571
   },
   "test_results": [
     {
-      "test": "Server Health Check",
+      "test": "Server Connectivity",
       "success": true,
-      "message": "Server is running (HTTP 200)",
+      "message": "Server responding (HTTP 200)",
       "details": {},
-      "timestamp": "2026-02-09T21:10:41.068694"
+      "timestamp": "2026-02-09T21:12:42.743175"
     },
     {
-      "test": "Database Connectivity",
+      "test": "tRPC Endpoints",
+      "success": false,
+      "message": "HTTP 405",
+      "details": {},
+      "timestamp": "2026-02-09T21:12:42.751486"
+    },
+    {
+      "test": "Auth Endpoints",
+      "success": true,
+      "message": "3/4 auth endpoints available",
+      "details": {},
+      "timestamp": "2026-02-09T21:12:42.760850"
+    },
+    {
+      "test": "Knowledge Base Endpoints",
+      "success": true,
+      "message": "3/4 KB endpoints available",
+      "details": {},
+      "timestamp": "2026-02-09T21:12:42.766973"
+    },
+    {
+      "test": "Database Connection",
       "success": true,
       "message": "Database connection successful",
       "details": {},
-      "timestamp": "2026-02-09T21:10:41.092506"
+      "timestamp": "2026-02-09T21:12:42.768279"
     },
     {
-      "test": "Environment Configuration",
+      "test": "Environment Setup",
       "success": true,
-      "message": "All 2 environment checks passed",
+      "message": "Server running on expected port 3000",
       "details": {},
-      "timestamp": "2026-02-09T21:10:41.092536"
+      "timestamp": "2026-02-09T21:12:42.768294"
     },
     {
-      "test": "Send Verification Code",
-      "success": false,
-      "message": "Signup failed: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "test": "Video Transcription Module",
+      "success": true,
+      "message": "Video transcription endpoints available",
       "details": {},
-      "timestamp": "2026-02-09T21:10:41.096484"
-    },
-    {
-      "test": "Supabase Login",
-      "success": false,
-      "message": "Login failed (expected in test): [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
-      "details": {},
-      "timestamp": "2026-02-09T21:10:41.099096"
-    },
-    {
-      "test": "Knowledge Base Access",
-      "success": false,
-      "message": "Unexpected error: Please login (10001)",
-      "details": {},
-      "timestamp": "2026-02-09T21:10:41.101542"
-    },
-    {
-      "test": "YouTube Transcript Endpoints",
-      "success": false,
-      "message": "Unexpected error: Please login (10001)",
-      "details": {},
-      "timestamp": "2026-02-09T21:10:41.103670"
+      "timestamp": "2026-02-09T21:12:42.770546"
     }
   ]
 }
