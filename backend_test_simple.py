@@ -132,7 +132,7 @@ class SalesReplyCoachTester:
         
         for endpoint in kb_endpoints:
             try:
-                response = self.session.get(f"{self.base_url}/api/trpc/{endpoint}?input={}", timeout=5)
+                response = self.session.get(f"{self.base_url}/api/trpc/{endpoint}?input=%7B%7D", timeout=5)
                 
                 # Any response (even error) indicates endpoint exists
                 if response.status_code in [200, 400, 401, 500]:
