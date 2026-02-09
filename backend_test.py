@@ -228,17 +228,33 @@ class SalesReplyCoachTester:
         print(f"\n🔍 Testing YouTube transcript extraction for: {self.youtube_test_url}")
         
         try:
-            # Test the videoTranscription module directly by importing it
+            # Test the videoTranscription module directly
             import sys
-            sys.path.append('/app/server')
+            import os
             
-            # Try to import and test the function
+            # Add the server directory to Python path
+            server_path = '/app/server'
+            if server_path not in sys.path:
+                sys.path.insert(0, server_path)
+            
+            # Change to server directory to handle relative imports
+            original_cwd = os.getcwd()
+            os.chdir(server_path)
+            
             try:
+                # Import the function
                 from videoTranscription import getYouTubeTranscript
                 
-                # This will test the actual transcript extraction
                 print("Testing YouTube transcript extraction...")
-                result = getYouTubeTranscript(self.youtube_test_url)
+                
+                # Use asyncio to run the async function
+                import asyncio
+                
+                async def test_transcript():
+                    return await getYouTubeTranscript(self.youtube_test_url)
+                
+                # Run the async function
+                result = asyncio.run(test_transcript())
                 
                 if result and result.get('transcript') and len(result['transcript']) > 50:
                     self.log_test("YouTube Transcript Extraction", True, 
@@ -246,19 +262,26 @@ class SalesReplyCoachTester:
                     return True
                 elif result and result.get('method') == 'failed':
                     self.log_test("YouTube Transcript Extraction", False, 
-                                "Transcript extraction failed - may need ffmpeg or yt-dlp")
+                                "Transcript extraction failed - check yt-dlp and ffmpeg setup")
                     return False
                 else:
+                    transcript_len = len(result.get('transcript', '')) if result else 0
                     self.log_test("YouTube Transcript Extraction", False, 
-                                f"Transcript too short or empty: {len(result.get('transcript', '')) if result else 0} chars")
+                                f"Transcript too short or empty: {transcript_len} chars")
                     return False
                     
             except ImportError as e:
-                self.log_test("YouTube Transcript Extraction", False, f"Cannot import videoTranscription module: {e}")
+                self.log_test("YouTube Transcript Extraction", False, f"Cannot import videoTranscription: {e}")
                 return False
+            except Exception as e:
+                self.log_test("YouTube Transcript Extraction", False, f"Error during transcript extraction: {str(e)}")
+                return False
+            finally:
+                # Restore original working directory
+                os.chdir(original_cwd)
                 
         except Exception as e:
-            self.log_test("YouTube Transcript Extraction", False, f"Error testing transcript: {str(e)}")
+            self.log_test("YouTube Transcript Extraction", False, f"Error setting up transcript test: {str(e)}")
             return False
 
     def test_database_connectivity(self):
