@@ -1039,8 +1039,7 @@ Provide 2-3 re-engagement message suggestions in JSON format:
 
         const workspace = await db.getWorkspace(prospect.workspaceId, ctx.user.id);
         const workspaceContext = workspace ? `
-Your Business: ${workspace.profileAnalysis || workspace.nicheDescription || "Not specified"}
-Your Products: ${workspace.productsDetected || "Not specified"}` : "";
+Your Business: ${workspace.profileAnalysis || workspace.nicheDescription || "Digital Marketing"}
 Your Products: ${workspace.productsDetected || "Not specified"}` : "";
 
         // Get relevant knowledge for first contact
@@ -1051,50 +1050,52 @@ Your Products: ${workspace.productsDetected || "Not specified"}` : "";
           5
         );
         const knowledgeContext = knowledgeChunks.length > 0
-          ? `\n\nYOUR LEARNED KNOWLEDGE:\n${knowledgeChunks.map(c => `[${c.category}]: ${c.content}`).join("\n")}`
+          ? `\n\nYOUR LEARNED SALES KNOWLEDGE (USE THIS TO CRAFT THE MESSAGE):\n${knowledgeChunks.map(c => `[${c.category}]: ${c.content}`).join("\n")}`
           : "";
 
-        // Enhanced deep scraping: Use LLM vision to analyze profile pages
+        // Enhanced deep analysis using scraped data + AI
         const response = await callLLMWithRetry({
           messages: [
             { 
               role: "system", 
-              content: `You are an expert social media analyst and prospect researcher. Your task is to deeply analyze social profiles to understand:
+              content: `You are an expert social media analyst and sales outreach specialist. Your task is to:
 
-1. BIO & IDENTITY: Who they are, what they do, their expertise
-2. CONTENT THEMES: Topics they post about, video themes, content style
-3. PRODUCTS/SERVICES: What they sell, pricing, product features
-4. AUDIENCE: Who follows them, engagement patterns
-5. PAIN POINTS: Problems they discuss, frustrations they share
-6. ASPIRATIONS: Goals they mention, dreams they talk about
-7. COMMUNICATION STYLE: Tone, language, emoji usage, personality
+1. Analyze the prospect's profile data to understand who they are
+2. Identify their niche, interests, pain points, and goals
+3. Create a HIGHLY PERSONALIZED first message that:
+   - Uses their ACTUAL NAME (${prospect.name}) naturally
+   - References specific details about their business/content
+   - Positions you as a peer in the digital marketing space
+   - Feels like a genuine friend reaching out, NOT a sales pitch
+   - Triggers curiosity and invites a response
 
-Analyze ALL available URLs deeply and extract comprehensive insights.` 
+The message should feel like you've been following their work and genuinely want to connect.` 
             },
             { 
               role: "user", 
-              content: `Perform deep analysis on this prospect:
+              content: `Create a personalized outreach strategy for this prospect:
+
+PROSPECT NAME: ${prospect.name}
 ${workspaceContext}
+${scrapedContext}
 
-Prospect Social URLs (visit and analyze each one deeply):
+SOCIAL URLS TO ANALYZE:
 ${urls.map((url, i) => `${i + 1}. ${url}`).join("\n")}
-
-Instructions:
-- Analyze their bio, profile description, and about section
-- Review their recent posts/videos (last 10-20) for content themes
-- Identify products/services they offer and pricing
-- Note their communication style and personality
-- Detect pain points they discuss or problems they solve
-- Identify their target audience and niche
 ${knowledgeContext}
 
-Provide a JSON response with:
-1. profileAnalysis: Comprehensive summary of who they are and what they do
-2. detectedInterests: Their niche, interests, and content themes
-3. productsOffered: List of products/services they sell (if any)
-4. communicationStyle: How they communicate (tone, style, personality)
-5. painPoints: Problems or frustrations they discuss
-6. suggestedFirstMessage: A highly personalized first message that demonstrates you understand them deeply` 
+Based on the above information, provide a JSON response with:
+1. profileAnalysis: Who is ${prospect.name}? What do they do? What's their expertise?
+2. detectedInterests: Their niche, topics they care about, content themes
+3. productsOffered: What products/services do they sell (if any)?
+4. communicationStyle: How do they communicate? Casual? Professional? Emoji user?
+5. painPoints: What challenges might they face in their business?
+6. suggestedFirstMessage: Write a message that:
+   - Starts with their name naturally (Hey ${prospect.name}!)
+   - References something specific about their work
+   - Mentions you're also in digital marketing
+   - Creates curiosity without being salesy
+   - Asks a question to encourage reply
+   - Feels like a genuine peer-to-peer connection` 
             },
           ],
           response_format: {
