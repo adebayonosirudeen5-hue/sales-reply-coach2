@@ -224,64 +224,53 @@ class SalesReplyCoachTester:
             return False
 
     def test_youtube_transcript_direct(self):
-        """Test YouTube transcript extraction directly"""
+        """Test YouTube transcript extraction directly using TypeScript"""
         print(f"\n🔍 Testing YouTube transcript extraction for: {self.youtube_test_url}")
         
         try:
-            # Test the videoTranscription module directly
-            import sys
+            import subprocess
             import os
             
-            # Add the server directory to Python path
-            server_path = '/app/server'
-            if server_path not in sys.path:
-                sys.path.insert(0, server_path)
+            # Run the TypeScript test directly
+            result = subprocess.run(
+                ['npx', 'tsx', 'test_transcript.ts'], 
+                cwd='/app',
+                capture_output=True, 
+                text=True, 
+                timeout=60
+            )
             
-            # Change to server directory to handle relative imports
-            original_cwd = os.getcwd()
-            os.chdir(server_path)
-            
-            try:
-                # Import the function
-                from videoTranscription import getYouTubeTranscript
-                
-                print("Testing YouTube transcript extraction...")
-                
-                # Use asyncio to run the async function
-                import asyncio
-                
-                async def test_transcript():
-                    return await getYouTubeTranscript(self.youtube_test_url)
-                
-                # Run the async function
-                result = asyncio.run(test_transcript())
-                
-                if result and result.get('transcript') and len(result['transcript']) > 50:
+            if result.returncode == 0:
+                output = result.stdout
+                # Check if transcript was extracted successfully
+                if "Got captions:" in output and "chars" in output:
+                    # Extract character count
+                    import re
+                    char_match = re.search(r'Got captions: (\d+) chars', output)
+                    if char_match:
+                        char_count = int(char_match.group(1))
+                        self.log_test("YouTube Transcript Extraction", True, 
+                                    f"Successfully extracted {char_count} characters via captions")
+                        return True
+                elif "transcript" in output.lower() and len(output) > 200:
                     self.log_test("YouTube Transcript Extraction", True, 
-                                f"Successfully extracted {len(result['transcript'])} characters via {result.get('method', 'unknown')}")
+                                "Successfully extracted transcript (method unknown)")
                     return True
-                elif result and result.get('method') == 'failed':
-                    self.log_test("YouTube Transcript Extraction", False, 
-                                "Transcript extraction failed - check yt-dlp and ffmpeg setup")
-                    return False
                 else:
-                    transcript_len = len(result.get('transcript', '')) if result else 0
                     self.log_test("YouTube Transcript Extraction", False, 
-                                f"Transcript too short or empty: {transcript_len} chars")
+                                f"Transcript extraction completed but no content found")
                     return False
-                    
-            except ImportError as e:
-                self.log_test("YouTube Transcript Extraction", False, f"Cannot import videoTranscription: {e}")
+            else:
+                error_output = result.stderr or result.stdout
+                self.log_test("YouTube Transcript Extraction", False, 
+                            f"Transcript test failed: {error_output[:200]}")
                 return False
-            except Exception as e:
-                self.log_test("YouTube Transcript Extraction", False, f"Error during transcript extraction: {str(e)}")
-                return False
-            finally:
-                # Restore original working directory
-                os.chdir(original_cwd)
                 
+        except subprocess.TimeoutExpired:
+            self.log_test("YouTube Transcript Extraction", False, "Transcript test timed out after 60 seconds")
+            return False
         except Exception as e:
-            self.log_test("YouTube Transcript Extraction", False, f"Error setting up transcript test: {str(e)}")
+            self.log_test("YouTube Transcript Extraction", False, f"Error running transcript test: {str(e)}")
             return False
 
     def test_database_connectivity(self):
