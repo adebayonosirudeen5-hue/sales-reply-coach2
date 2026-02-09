@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-02-09T22:11:37.913200",
+  "timestamp": "2026-02-09T22:13:03.477033",
   "summary": {
     "total_tests": 9,
-    "passed": 4,
-    "failed": 5,
-    "success_rate": 44.44444444444444
+    "passed": 5,
+    "failed": 4,
+    "success_rate": 55.55555555555556
   },
   "test_results": [
     {
@@ -12,63 +12,63 @@
       "success": true,
       "message": "Server is running (HTTP 200)",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.608628"
+      "timestamp": "2026-02-09T22:12:57.255061"
     },
     {
       "test": "Database Connectivity",
       "success": true,
       "message": "Database connection successful",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.617279"
+      "timestamp": "2026-02-09T22:12:57.262172"
     },
     {
       "test": "FFmpeg Availability",
       "success": true,
       "message": "FFmpeg available: ffmpeg version 5.1.8-0+deb12u1 Copyright (c) 2000-2025 the FFmpeg developers",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.725108"
+      "timestamp": "2026-02-09T22:12:57.344717"
     },
     {
       "test": "yt-dlp Availability",
       "success": true,
       "message": "yt-dlp available: 2026.02.04",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.894235"
+      "timestamp": "2026-02-09T22:12:57.511474"
     },
     {
       "test": "YouTube Transcript Extraction",
-      "success": false,
-      "message": "Cannot import videoTranscription: No module named 'videoTranscription'",
+      "success": true,
+      "message": "Successfully extracted 2066 characters via captions",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.894471"
+      "timestamp": "2026-02-09T22:13:01.399948"
     },
     {
       "test": "Send Verification Code",
       "success": false,
-      "message": "Signup failed: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "message": "Signup failed: Unknown error",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.898041"
+      "timestamp": "2026-02-09T22:13:02.007188"
     },
     {
       "test": "Verify Code",
       "success": false,
       "message": "No valid verification code found",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.909144"
+      "timestamp": "2026-02-09T22:13:02.660304"
     },
     {
       "test": "Supabase Login",
       "success": false,
-      "message": "Login failed (expected in test): [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "message": "Login failed (expected in test): Invalid Supabase token",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.911471"
+      "timestamp": "2026-02-09T22:13:03.473825"
     },
     {
       "test": "Knowledge Base Access",
       "success": false,
       "message": "Unexpected error: Please login (10001)",
       "details": {},
-      "timestamp": "2026-02-09T22:11:37.913021"
+      "timestamp": "2026-02-09T22:13:03.476843"
     }
   ]
 }
