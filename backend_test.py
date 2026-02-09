@@ -21,7 +21,7 @@ class SalesReplyCoachTester:
         })
         
         # Test credentials from review request
-        self.test_email = "testuser@example.com"
+        self.test_email = f"testuser_{int(time.time())}@example.com"  # Unique email for each test run
         self.test_password = "TestPass123!"
         self.test_name = "Test User"
         self.youtube_test_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
@@ -34,6 +34,7 @@ class SalesReplyCoachTester:
         # Auth tokens
         self.supabase_token = None
         self.verification_code = None
+        self.session_cookie = None
 
     def log_test(self, test_name: str, success: bool, message: str = "", details: Dict = None):
         """Log test result"""
