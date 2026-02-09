@@ -221,33 +221,42 @@ class SalesReplyCoachTester:
             self.log_test("Knowledge Base Access", False, f"Error testing knowledge base: {str(e)}")
             return False
 
-    def test_youtube_transcript_capability(self):
-        """Test YouTube transcript processing capability"""
-        print(f"\n🔍 Testing YouTube transcript capability...")
+    def test_youtube_transcript_direct(self):
+        """Test YouTube transcript extraction directly"""
+        print(f"\n🔍 Testing YouTube transcript extraction for: {self.youtube_test_url}")
         
-        # Test if the videoTranscription module is available
         try:
-            # We can't directly test the transcript without auth, but we can check if the endpoint exists
-            # This is a protected endpoint, so we expect an auth error
-            response = self.make_trpc_request("workspace.create", {
-                "name": "Test Workspace",
-                "nicheDescription": "Testing YouTube transcription"
-            })
+            # Test the videoTranscription module directly by importing it
+            import sys
+            sys.path.append('/app/server')
             
-            if "error" in response:
-                error_msg = response["error"].get("json", {}).get("message", "Unknown error")
-                if "UNAUTHORIZED" in error_msg or "authentication" in error_msg.lower():
-                    self.log_test("YouTube Transcript Endpoints", True, "Transcript endpoints exist and require auth")
+            # Try to import and test the function
+            try:
+                from videoTranscription import getYouTubeTranscript
+                
+                # This will test the actual transcript extraction
+                print("Testing YouTube transcript extraction...")
+                result = getYouTubeTranscript(self.youtube_test_url)
+                
+                if result and result.get('transcript') and len(result['transcript']) > 50:
+                    self.log_test("YouTube Transcript Extraction", True, 
+                                f"Successfully extracted {len(result['transcript'])} characters via {result.get('method', 'unknown')}")
                     return True
-                else:
-                    self.log_test("YouTube Transcript Endpoints", False, f"Unexpected error: {error_msg}")
+                elif result and result.get('method') == 'failed':
+                    self.log_test("YouTube Transcript Extraction", False, 
+                                "Transcript extraction failed - may need ffmpeg or yt-dlp")
                     return False
-            else:
-                self.log_test("YouTube Transcript Endpoints", True, "Transcript endpoints accessible")
-                return True
+                else:
+                    self.log_test("YouTube Transcript Extraction", False, 
+                                f"Transcript too short or empty: {len(result.get('transcript', '')) if result else 0} chars")
+                    return False
+                    
+            except ImportError as e:
+                self.log_test("YouTube Transcript Extraction", False, f"Cannot import videoTranscription module: {e}")
+                return False
                 
         except Exception as e:
-            self.log_test("YouTube Transcript Endpoints", False, f"Error testing transcript capability: {str(e)}")
+            self.log_test("YouTube Transcript Extraction", False, f"Error testing transcript: {str(e)}")
             return False
 
     def test_database_connectivity(self):
