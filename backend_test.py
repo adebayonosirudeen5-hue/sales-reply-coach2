@@ -69,7 +69,9 @@ class SalesReplyCoachTester:
         else:
             # For mutations, use POST with proper tRPC format
             url = f"{self.base_url}/api/trpc/{procedure}"
-            response = self.session.post(url, json=input_data or {})
+            # tRPC expects the input to be wrapped properly
+            payload = input_data if input_data is not None else {}
+            response = self.session.post(url, json=payload)
         
         try:
             return response.json()
