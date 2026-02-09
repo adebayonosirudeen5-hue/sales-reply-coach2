@@ -1,60 +1,74 @@
 {
-  "timestamp": "2026-02-09T21:12:42.770719",
+  "timestamp": "2026-02-09T22:11:00.125900",
   "summary": {
-    "total_tests": 7,
-    "passed": 6,
-    "failed": 1,
-    "success_rate": 85.71428571428571
+    "total_tests": 9,
+    "passed": 4,
+    "failed": 5,
+    "success_rate": 44.44444444444444
   },
   "test_results": [
     {
-      "test": "Server Connectivity",
+      "test": "Server Health Check",
       "success": true,
-      "message": "Server responding (HTTP 200)",
+      "message": "Server is running (HTTP 200)",
       "details": {},
-      "timestamp": "2026-02-09T21:12:42.743175"
+      "timestamp": "2026-02-09T22:10:59.593203"
     },
     {
-      "test": "tRPC Endpoints",
-      "success": false,
-      "message": "HTTP 405",
-      "details": {},
-      "timestamp": "2026-02-09T21:12:42.751486"
-    },
-    {
-      "test": "Auth Endpoints",
-      "success": true,
-      "message": "3/4 auth endpoints available",
-      "details": {},
-      "timestamp": "2026-02-09T21:12:42.760850"
-    },
-    {
-      "test": "Knowledge Base Endpoints",
-      "success": true,
-      "message": "3/4 KB endpoints available",
-      "details": {},
-      "timestamp": "2026-02-09T21:12:42.766973"
-    },
-    {
-      "test": "Database Connection",
+      "test": "Database Connectivity",
       "success": true,
       "message": "Database connection successful",
       "details": {},
-      "timestamp": "2026-02-09T21:12:42.768279"
+      "timestamp": "2026-02-09T22:10:59.605893"
     },
     {
-      "test": "Environment Setup",
+      "test": "FFmpeg Availability",
       "success": true,
-      "message": "Server running on expected port 3000",
+      "message": "FFmpeg available: ffmpeg version 5.1.8-0+deb12u1 Copyright (c) 2000-2025 the FFmpeg developers",
       "details": {},
-      "timestamp": "2026-02-09T21:12:42.768294"
+      "timestamp": "2026-02-09T22:10:59.916532"
     },
     {
-      "test": "Video Transcription Module",
+      "test": "yt-dlp Availability",
       "success": true,
-      "message": "Video transcription endpoints available",
+      "message": "yt-dlp available: 2026.02.04",
       "details": {},
-      "timestamp": "2026-02-09T21:12:42.770546"
+      "timestamp": "2026-02-09T22:11:00.093420"
+    },
+    {
+      "test": "YouTube Transcript Extraction",
+      "success": false,
+      "message": "Cannot import videoTranscription module: No module named 'videoTranscription'",
+      "details": {},
+      "timestamp": "2026-02-09T22:11:00.093623"
+    },
+    {
+      "test": "Send Verification Code",
+      "success": false,
+      "message": "Signup failed: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "details": {},
+      "timestamp": "2026-02-09T22:11:00.104947"
+    },
+    {
+      "test": "Verify Code",
+      "success": false,
+      "message": "No valid verification code found",
+      "details": {},
+      "timestamp": "2026-02-09T22:11:00.119898"
+    },
+    {
+      "test": "Supabase Login",
+      "success": false,
+      "message": "Login failed (expected in test): [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "details": {},
+      "timestamp": "2026-02-09T22:11:00.122176"
+    },
+    {
+      "test": "Knowledge Base Access",
+      "success": false,
+      "message": "Unexpected error: Please login (10001)",
+      "details": {},
+      "timestamp": "2026-02-09T22:11:00.124520"
     }
   ]
 }
