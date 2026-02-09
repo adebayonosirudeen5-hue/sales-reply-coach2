@@ -285,30 +285,52 @@ class SalesReplyCoachTester:
             self.log_test("Database Connectivity", False, f"Database connectivity error: {str(e)}")
             return False
 
-    def test_environment_variables(self):
-        """Test if required environment variables are configured"""
-        print(f"\n🔍 Testing environment configuration...")
+    def test_ffmpeg_availability(self):
+        """Test if ffmpeg is available for video processing"""
+        print(f"\n🔍 Testing ffmpeg availability...")
         
-        # We can infer env var status from API responses
-        success_count = 0
-        total_checks = 0
+        try:
+            import subprocess
+            result = subprocess.run(['which', 'ffmpeg'], capture_output=True, text=True, timeout=5)
+            if result.returncode == 0:
+                # Test ffmpeg version
+                version_result = subprocess.run(['ffmpeg', '-version'], capture_output=True, text=True, timeout=5)
+                if version_result.returncode == 0:
+                    version_line = version_result.stdout.split('\n')[0]
+                    self.log_test("FFmpeg Availability", True, f"FFmpeg available: {version_line}")
+                    return True
+                else:
+                    self.log_test("FFmpeg Availability", False, "FFmpeg found but not working")
+                    return False
+            else:
+                self.log_test("FFmpeg Availability", False, "FFmpeg not found in PATH")
+                return False
+        except Exception as e:
+            self.log_test("FFmpeg Availability", False, f"Error checking ffmpeg: {str(e)}")
+            return False
+
+    def test_ytdlp_availability(self):
+        """Test if yt-dlp is available for video downloading"""
+        print(f"\n🔍 Testing yt-dlp availability...")
         
-        # Check if OpenAI key is configured (needed for transcription)
-        total_checks += 1
-        # We can't directly check env vars, but transcript functionality requires OpenAI
-        # This is indirectly tested through other endpoints
-        success_count += 1  # Assume configured for now
-        
-        # Check if Supabase is configured
-        total_checks += 1
-        # Database connectivity test above indicates Supabase is configured
-        success_count += 1
-        
-        if success_count == total_checks:
-            self.log_test("Environment Configuration", True, f"All {total_checks} environment checks passed")
-            return True
-        else:
-            self.log_test("Environment Configuration", False, f"Only {success_count}/{total_checks} environment checks passed")
+        try:
+            import subprocess
+            result = subprocess.run(['which', 'yt-dlp'], capture_output=True, text=True, timeout=5)
+            if result.returncode == 0:
+                # Test yt-dlp version
+                version_result = subprocess.run(['yt-dlp', '--version'], capture_output=True, text=True, timeout=10)
+                if version_result.returncode == 0:
+                    version = version_result.stdout.strip()
+                    self.log_test("yt-dlp Availability", True, f"yt-dlp available: {version}")
+                    return True
+                else:
+                    self.log_test("yt-dlp Availability", False, "yt-dlp found but not working")
+                    return False
+            else:
+                self.log_test("yt-dlp Availability", False, "yt-dlp not found in PATH")
+                return False
+        except Exception as e:
+            self.log_test("yt-dlp Availability", False, f"Error checking yt-dlp: {str(e)}")
             return False
 
     def run_all_tests(self):
