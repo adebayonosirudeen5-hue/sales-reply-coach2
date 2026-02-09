@@ -71,14 +71,15 @@ export async function getYouTubeTranscript(videoUrl: string): Promise<{
     console.log(`[VideoTranscript] Trying to get captions for ${videoId}...`);
     try {
       const subsFile = path.join(tmpDir, "subs");
+      // Try both manual and auto-generated captions
       await execAsync(
-        `yt-dlp --write-auto-sub --sub-lang en --skip-download --sub-format vtt -o "${subsFile}" "${normalizedUrl}" 2>/dev/null`,
+        `yt-dlp --write-sub --write-auto-sub --sub-lang en,en-US,en-GB --skip-download --sub-format vtt/srt/best -o "${subsFile}" "${normalizedUrl}" 2>&1`,
         { timeout: 60000 }
       );
 
       // Look for the downloaded subtitle file
       const files = fs.readdirSync(tmpDir);
-      const subFile = files.find(f => f.endsWith(".vtt") || f.endsWith(".srt"));
+      const subFile = files.find(f => f.endsWith(".vtt") || f.endsWith(".srt") || f.includes(".en"));
       if (subFile) {
         const subContent = fs.readFileSync(path.join(tmpDir, subFile), "utf-8");
         const transcript = parseVTTToText(subContent);
@@ -88,7 +89,7 @@ export async function getYouTubeTranscript(videoUrl: string): Promise<{
         }
       }
     } catch (e) {
-      console.log("[VideoTranscript] No captions available, will try Whisper");
+      console.log("[VideoTranscript] No captions available, will try Whisper:", e instanceof Error ? e.message : e);
     }
 
     // Strategy 2: Download audio and transcribe with OpenAI Whisper
