@@ -97,10 +97,15 @@ export async function getYouTubeTranscript(videoUrl: string): Promise<{
     
     try {
       // Download audio only, convert to mp3, limit to 15 minutes for Whisper
-      await execAsync(
-        `yt-dlp -f "bestaudio[ext=m4a]/bestaudio" --extract-audio --audio-format mp3 --audio-quality 5 --postprocessor-args "-t 900" -o "${audioPath}" "${normalizedUrl}" 2>/dev/null`,
+      // Note: This requires ffmpeg to be installed
+      const { stdout, stderr } = await execAsync(
+        `yt-dlp -f "bestaudio[ext=m4a]/bestaudio" --extract-audio --audio-format mp3 --audio-quality 5 -o "${audioPath}" "${normalizedUrl}" 2>&1`,
         { timeout: 120000 }
       );
+      
+      if (stderr && stderr.includes("ffmpeg")) {
+        console.warn("[VideoTranscript] ffmpeg not available for audio conversion, using captions only");
+      }
 
       // Check if audio file was created
       if (!fs.existsSync(audioPath)) {
