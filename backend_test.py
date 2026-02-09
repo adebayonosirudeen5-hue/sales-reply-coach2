@@ -325,6 +325,8 @@ def main():
         success = tester.run_all_tests()
         
         # Save detailed results
+        import os
+        os.makedirs('/app/test_reports', exist_ok=True)
         with open('/app/test_reports/backend_test_results.json', 'w') as f:
             json.dump({
                 'timestamp': datetime.now().isoformat(),
@@ -335,7 +337,7 @@ def main():
                     'success_rate': (tester.tests_passed/tester.tests_run*100) if tester.tests_run > 0 else 0
                 },
                 'test_results': tester.test_results
-            }, indent=2)
+            }, f, indent=2)
         
         return 0 if success else 1
         
