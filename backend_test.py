@@ -344,17 +344,21 @@ class SalesReplyCoachTester:
             return False
             
         self.test_database_connectivity()
-        self.test_environment_variables()
+        
+        # Test dependencies for YouTube transcription
+        self.test_ffmpeg_availability()
+        self.test_ytdlp_availability()
+        
+        # Test YouTube transcript extraction directly
+        self.test_youtube_transcript_direct()
         
         # Authentication flow tests
         self.test_user_signup()
-        if self.verification_code:
-            self.test_verify_code()
+        self.test_verify_code()
         self.test_supabase_login()
         
         # Feature tests
         self.test_knowledge_base_endpoints()
-        self.test_youtube_transcript_capability()
         
         # Print summary
         print("\n" + "=" * 60)
