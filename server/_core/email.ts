@@ -79,7 +79,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
 
     // Send email via Resend
     const { data, error } = await resend.emails.send({
-      from: "Sales Reply Coach <onboarding@resend.dev>",
+      from: "Sales Reply Coach <noreply@ordersstan.store>",
       to: [email],
       subject: "Verify Your Email - Sales Reply Coach",
       html: emailHtml,
