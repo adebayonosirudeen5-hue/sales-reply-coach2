@@ -113,10 +113,49 @@ class SalesReplyCoachTester:
             self.log_test("Send Verification Code", False, f"Signup failed: {error_msg}")
             return False
 
+    def get_verification_code_from_logs(self):
+        """Extract verification code from server logs"""
+        try:
+            import subprocess
+            # Get recent server logs
+            result = subprocess.run(['tail', '-50', '/var/log/supervisor/backend.log'], 
+                                  capture_output=True, text=True, timeout=5)
+            if result.returncode == 0:
+                logs = result.stdout
+                # Look for verification code pattern
+                import re
+                code_match = re.search(r'VERIFICATION CODE: (\d{6})', logs)
+                if code_match:
+                    return code_match.group(1)
+                    
+                # Alternative pattern
+                code_match = re.search(r'Verification code for [^:]+: (\d{6})', logs)
+                if code_match:
+                    return code_match.group(1)
+        except:
+            pass
+        return None
+
     def test_verify_code(self):
         """Test email verification code"""
+        # Try to get verification code from logs
+        self.verification_code = self.get_verification_code_from_logs()
+        
         if not self.verification_code:
-            self.log_test("Verify Code", False, "No verification code available")
+            # Try common test codes
+            test_codes = ["123456", "000000", "111111"]
+            for code in test_codes:
+                verify_data = {
+                    "email": self.test_email,
+                    "code": code
+                }
+                response = self.make_trpc_request("auth.verifyCode", verify_data)
+                if "result" in response and response["result"].get("data", {}).get("success"):
+                    self.verification_code = code
+                    self.log_test("Verify Code", True, f"Email verification successful with code: {code}")
+                    return True
+            
+            self.log_test("Verify Code", False, "No valid verification code found")
             return False
             
         print(f"\n🔍 Testing code verification with code: {self.verification_code}...")
