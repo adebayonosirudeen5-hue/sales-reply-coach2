@@ -152,7 +152,7 @@ class SalesReplyCoachTester:
         """Infer database connectivity from API responses"""
         try:
             # Try an endpoint that would fail with DB connection issues
-            response = self.session.get(f"{self.base_url}/api/trpc/auth.me?input={}", timeout=10)
+            response = self.session.get(f"{self.base_url}/api/trpc/auth.me?input=%7B%7D", timeout=10)
             
             if response.status_code == 200:
                 try:
