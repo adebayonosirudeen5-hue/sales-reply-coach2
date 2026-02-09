@@ -622,9 +622,13 @@ export const appRouter = router({
         const sent = await sendVerificationEmail(input.email, code);
         if (!sent) {
           console.warn("[DEV] Email sending failed, but code is stored. Check logs for verification code.");
+          // In development, show the code in the success message
+          console.log(`\n========================================`);
+          console.log(`VERIFICATION CODE: ${code}`);
+          console.log(`========================================\n`);
         }
         
-        return { success: true, devCode: process.env.NODE_ENV === 'development' ? code : undefined };
+        return { success: true };
       }),
     verifyCode: publicProcedure
       .input(z.object({ 
