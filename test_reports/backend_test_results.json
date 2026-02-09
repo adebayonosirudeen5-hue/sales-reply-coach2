@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-02-09T21:10:41.103829",
+  "summary": {
+    "total_tests": 7,
+    "passed": 3,
+    "failed": 4,
+    "success_rate": 42.857142857142854
+  },
+  "test_results": [
+    {
+      "test": "Server Health Check",
+      "success": true,
+      "message": "Server is running (HTTP 200)",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.068694"
+    },
+    {
+      "test": "Database Connectivity",
+      "success": true,
+      "message": "Database connection successful",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.092506"
+    },
+    {
+      "test": "Environment Configuration",
+      "success": true,
+      "message": "All 2 environment checks passed",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.092536"
+    },
+    {
+      "test": "Send Verification Code",
+      "success": false,
+      "message": "Signup failed: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.096484"
+    },
+    {
+      "test": "Supabase Login",
+      "success": false,
+      "message": "Login failed (expected in test): [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.099096"
+    },
+    {
+      "test": "Knowledge Base Access",
+      "success": false,
+      "message": "Unexpected error: Please login (10001)",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.101542"
+    },
+    {
+      "test": "YouTube Transcript Endpoints",
+      "success": false,
+      "message": "Unexpected error: Please login (10001)",
+      "details": {},
+      "timestamp": "2026-02-09T21:10:41.103670"
+    }
+  ]
+}
