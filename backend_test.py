@@ -212,8 +212,8 @@ class SalesReplyCoachTester:
         try:
             response = self.make_trpc_request("brain.getStats", {}, "GET")
             if "error" in response:
-                error_msg = response["error"].get("json", {}).get("message", "Unknown error")
-                if "UNAUTHORIZED" in error_msg or "authentication" in error_msg.lower():
+                error_msg = response["error"].get("json", {}).get("message", str(response))
+                if "UNAUTHORIZED" in str(error_msg) or "Please login" in str(error_msg) or "authentication" in str(error_msg).lower():
                     self.log_test("Knowledge Base Access", True, "Endpoints require authentication (correct behavior)")
                     return True
                 else:
