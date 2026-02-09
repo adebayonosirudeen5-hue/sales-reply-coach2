@@ -104,17 +104,10 @@ class SalesReplyCoachTester:
         response = self.make_trpc_request("auth.sendVerificationCode", signup_data)
         
         if "result" in response and response["result"].get("data", {}).get("success"):
-            # In dev mode, verification code should be returned
-            dev_code = response["result"]["data"].get("devCode")
-            if dev_code:
-                self.verification_code = dev_code
-                self.log_test("Send Verification Code", True, f"Verification code sent (dev mode): {dev_code}")
-                return True
-            else:
-                self.log_test("Send Verification Code", True, "Verification code sent (production mode)")
-                # In production, we'd need to check email, but for testing we'll use a known code
-                self.verification_code = "123456"  # Fallback for testing
-                return True
+            self.log_test("Send Verification Code", True, "Verification code sent successfully")
+            # Check server logs for the verification code (dev mode)
+            time.sleep(1)  # Give server time to log the code
+            return True
         else:
             error_msg = response.get("error", {}).get("json", {}).get("message", "Unknown error")
             self.log_test("Send Verification Code", False, f"Signup failed: {error_msg}")
