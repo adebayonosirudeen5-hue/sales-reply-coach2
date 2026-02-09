@@ -105,3 +105,15 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
