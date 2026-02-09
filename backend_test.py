@@ -63,14 +63,14 @@ class SalesReplyCoachTester:
             url = f"{self.base_url}/api/trpc/{procedure}"
             if input_data:
                 import urllib.parse
-                query_param = urllib.parse.quote(json.dumps(input_data))
+                query_param = urllib.parse.quote(json.dumps({"json": input_data}))
                 url += f"?input={query_param}"
             response = self.session.get(url)
         else:
             # For mutations, use POST with proper tRPC format
             url = f"{self.base_url}/api/trpc/{procedure}"
-            # tRPC expects the input to be wrapped properly
-            payload = input_data if input_data is not None else {}
+            # tRPC expects the input to be wrapped in a "json" object
+            payload = {"json": input_data} if input_data is not None else {}
             response = self.session.post(url, json=payload)
         
         try:
