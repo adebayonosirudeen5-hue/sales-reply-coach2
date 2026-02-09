@@ -66,14 +66,14 @@ class SalesReplyCoachTester:
                 url += f"?input={query_param}"
             response = self.session.get(url)
         else:
-            # For mutations, use POST
+            # For mutations, use POST with proper tRPC format
             url = f"{self.base_url}/api/trpc/{procedure}"
             response = self.session.post(url, json=input_data or {})
         
         try:
             return response.json()
         except:
-            return {"error": f"Invalid JSON response: {response.text[:200]}"}
+            return {"error": f"Invalid JSON response: {response.text[:200]}", "status_code": response.status_code}
 
     def test_server_health(self):
         """Test if server is running and responding"""
