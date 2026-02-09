@@ -1,63 +1,69 @@
 # Sales Reply Coach - PRD
 
 ## Original Problem Statement
-Clone GitHub repo `adebayonosirudeen5-hue/sales-reply-coach2` and make it runnable. Main focus: YouTube and Instagram transcript feature - when user pastes URL, extract transcript and make AI learn from it.
+Clone GitHub repo `adebayonosirudeen5-hue/sales-reply-coach2` and fix:
+1. Signup "Unable to transform response from server" error
+2. YouTube transcription not working ("nothing to learn" error)
+3. Instagram transcription restrictions
 
 ## Architecture & Tech Stack
 - **Frontend**: React + Vite + TypeScript + Tailwind CSS + shadcn/ui
-- **Backend**: Node.js + Express + tRPC
+- **Backend**: Node.js + Express + tRPC + superjson
 - **Database**: PostgreSQL (Supabase via pooler connection)
 - **Auth**: Supabase Authentication + Custom email verification
-- **Email**: Resend API
+- **Email**: Resend API (domain: ordersstan.store)
 - **AI**: OpenAI API (GPT) for reply suggestions
-- **Video Transcription**: yt-dlp + YouTube Captions API + OpenAI Whisper
+- **Video Transcription**: yt-dlp + YouTube Captions API + OpenAI Whisper + ffmpeg
 
-## Core Features
-1. **User Authentication** - Email signup with 6-digit verification code
-2. **Knowledge Base** - Add YouTube/Instagram URLs and PDFs
-3. **YouTube Transcription** - Automatic transcript extraction via captions or Whisper
-4. **AI Brain Training** - Process content into categorized knowledge chunks
-5. **Conversation Coach** - Paste text or screenshots, get AI reply suggestions
-6. **Workspaces** - Organize by niche/topic
-7. **Prospect Management** - Track conversations
+## Issues Fixed (Feb 9, 2026)
 
-## What's Been Implemented (Feb 9, 2026)
-- [x] Repository cloned with all 173 files
-- [x] Dependencies installed (pnpm)
-- [x] Database schema converted from MySQL to PostgreSQL
-- [x] Database tables created in Supabase
-- [x] Environment variables configured (Supabase pooler connection)
-- [x] Fixed MySQL->PostgreSQL query syntax (onDuplicateKeyUpdate -> onConflictDoUpdate)
-- [x] Modified email verification to work in dev mode (returns code)
-- [x] YouTube transcript extraction verified working
-- [x] User signup/verification flow tested and working
+### 1. Signup Error Fixed
+- Changed email "from" address to use verified domain: `noreply@ordersstan.store`
+- Removed `devCode` from response that was causing tRPC type mismatch
+- Email verification codes now logged in console for development
 
-## Environment Files
-- `/app/.env` - Server-side variables (DATABASE_URL uses pooler)
-- `/app/.env.local` - Client-side VITE_ variables
+### 2. YouTube Transcription Fixed
+- **Root cause**: ffmpeg was not installed
+- **Solution**: Installed ffmpeg for audio conversion
+- YouTube transcription now works via:
+  - Method 1: YouTube auto-generated captions (no ffmpeg needed)
+  - Method 2: Whisper transcription via audio download (requires ffmpeg)
+- Improved error handling and logging
+
+### 3. Instagram Limitation (Known)
+- Instagram blocks automated access to videos
+- Users should manually copy video caption text and paste as text knowledge item
 
 ## Database (Supabase PostgreSQL)
 - **Project**: xfxehkotbvhhtzbajzmk
-- **Connection**: Pooler connection (aws-1-eu-west-1.pooler.supabase.com)
-- **Tables**: users, verificationCodes, workspaces, prospects, chat_messages, ai_suggestions, knowledge_base_items, knowledge_chunks, ai_brain_stats, conversations, conversation_messages, suggestions
+- **Connection**: Pooler at aws-1-eu-west-1.pooler.supabase.com
+- **Schema**: Converted from MySQL to PostgreSQL syntax
 
-## Known Limitations
-- Resend email in test mode (can only send to verified email)
-- Instagram transcription limited (requires manual caption paste)
-- Some YouTube videos without captions need Whisper (slower)
+## Test Results (Final)
+- Backend: 100% pass rate
+- YouTube transcript: ✅ Working (2066+ characters extracted)
+- User signup: ✅ Working
+- Database: ✅ Connected via pooler
+- ffmpeg: ✅ Installed (v5.1.8)
+- yt-dlp: ✅ Installed (v2026.02.04)
 
-## Test Results
-- Backend: 85.7% pass rate
-- User signup/verification: ✅ Working
-- YouTube transcript: ✅ Working
-- Database connection: ✅ Working via pooler
+## Environment Requirements for Manus Deployment
+To deploy on Manus, ensure the following are installed:
+1. yt-dlp (for video downloading)
+2. ffmpeg (for audio conversion)
+3. Node.js 20+
+4. PostgreSQL database with tables created
 
-## Next Tasks (P0/P1)
-- [ ] Test full user flow in browser (signup -> dashboard -> add YouTube URL -> process)
-- [ ] Verify domain in Resend for production emails
-- [ ] Test AI reply generation with trained knowledge base
+## Files Modified
+- `/app/server/_core/email.ts` - Changed from address to verified domain
+- `/app/server/routers.ts` - Fixed signup response, improved error handling
+- `/app/server/videoTranscription.ts` - Improved caption extraction
+- `/app/server/db.ts` - PostgreSQL syntax (onConflictDoUpdate)
+- `/app/drizzle/schema.ts` - PostgreSQL types
+- `/app/.env` - Supabase pooler connection
+- `/app/.env.local` - Frontend Supabase keys
 
-## Backlog (P2)
-- Add more video platforms (TikTok)
-- Improve Instagram content extraction
-- Add user dashboard analytics
+## Next Steps for Manus Deployment
+1. Ensure yt-dlp and ffmpeg are installed on Manus
+2. Run database migrations (SQL provided in /app/setup_database.sql)
+3. Set environment variables for production
